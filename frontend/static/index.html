@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apartment Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+<style>
+  :root {
+    --accent: #0f766e;
+    --accent-hover: #115e59;
+    --accent-light: #ccfbf1;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --user-msg-bg: #0f766e;
+    --user-msg-text: #ffffff;
+    --footer-bg: #ffffff;
+    --input-bg: #f8fafc;
+    --chip-bg: #f1f5f9;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(15,118,110,0.08);
+  }
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --border: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-light: #134e4a;
+    --user-msg-bg: #0d9488;
+    --footer-bg: #1e293b;
+    --input-bg: #0f172a;
+    --chip-bg: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  header {
+    background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+    color: #fff;
+    padding: 0.85rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 2px 8px rgba(15,118,110,0.15);
+    z-index: 10;
+  }
+  .header-icon {
+    font-size: 2rem !important;
+    color: #ccfbf1 !important;
+  }
+  .header-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 0.01em;
+  }
+  .header-sub {
+    font-size: 0.78rem;
+    color: #99f6e4;
+    font-weight: 500;
+  }
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .header-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .header-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.05);
+  }
+  .header-btn .material-symbols-outlined {
+    color: #fff !important;
+    font-size: 1.2rem !important;
+  }
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem 1rem;
+    max-width: 840px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  /* Hero Welcome Card */
+  .welcome-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    margin: 1rem auto;
+    max-width: 600px;
+    animation: fadeIn 0.3s ease-out;
+  }
+  .welcome-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+  .welcome-card h2 {
+    margin: 0.5rem 0 0.5rem 0;
+    font-size: 1.4rem;
+    color: var(--text-main);
+  }
+  .welcome-card p {
+    margin: 0 0 1.25rem 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .feature-grid {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .feature-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--chip-bg);
+    padding: 0.4rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    color: var(--text-main);
+    font-weight: 500;
+  }
+
+  .msg {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    animation: fadeIn 0.2s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg.user {
+    flex-direction: row-reverse;
+  }
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+  }
+  .msg.user .avatar {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .msg.agent .avatar {
+    background: #0f766e;
+    color: #ffffff;
+  }
+  .avatar .material-symbols-outlined {
+    font-size: 1.3rem !important;
+    color: inherit !important;
+  }
+  .bubble-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-width: 80%;
+  }
+  .msg.user .bubble-container {
+    align-items: flex-end;
+  }
+  .bubble {
+    padding: 0.85rem 1.15rem;
+    border-radius: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    white-space: pre-wrap;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .msg.user .bubble {
+    background: var(--user-msg-bg);
+    color: var(--user-msg-text);
+    border: none;
+    border-radius: 16px 16px 4px 16px;
+  }
+  .msg.agent .bubble {
+    border-radius: 16px 16px 16px 4px;
+    color: var(--text-main);
+  }
+  .bubble.rich {
+    background: transparent;
+    border: none;
+    padding: 0;
+    max-width: 100%;
+    box-shadow: none;
+    white-space: normal;
+  }
+
+  /* Message metadata (timestamp & copy button) */
+  .msg-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 0 0.25rem;
+  }
+  .copy-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.72rem;
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+  }
+  .copy-btn:hover {
+    color: var(--accent);
+  }
+
+  /* Typing Dots Animation */
+  .typing-indicator {
+    display: flex;
+    gap: 5px;
+    padding: 6px 4px;
+    align-items: center;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: typingPulse 1.4s infinite ease-in-out;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingPulse {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1.1); opacity: 1; }
+  }
+
+  .footer-container {
+    background: var(--footer-bg);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 1rem 1rem 1rem;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+    transition: background 0.2s ease;
+  }
+  #suggestions {
+    display: flex;
+    gap: 0.5rem;
+    padding-bottom: 0.75rem;
+    max-width: 840px;
+    width: 100%;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chip {
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--chip-bg);
+    color: var(--accent);
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .chip:hover {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  form {
+    display: flex;
+    gap: 0.6rem;
+    max-width: 840px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  input {
+    flex: 1;
+    padding: 0.85rem 1.2rem;
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    background: var(--input-bg);
+    color: var(--text-main);
+  }
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(15,118,110,0.15);
+  }
+  button.send-btn {
+    padding: 0 1.25rem;
+    border: none;
+    border-radius: 24px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  button.send-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  /* A2UI components */
+  .a2card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.2rem;
+    background: var(--card-bg);
+    box-shadow: var(--shadow-md);
+    max-width: 100%;
+  }
+  .a2card + .a2card, .a2col > .a2card { margin-top: 0.75rem; }
+  .a2col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .a2row { display: flex; flex-direction: row; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .a2row.between { justify-content: space-between; }
+  .a2text { margin: 0; line-height: 1.5; color: var(--text-main); }
+  .a2text.a2-h1 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+  .a2text.a2-h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+  .a2text.a2-h3 { font-size: 1.1rem; font-weight: 600; color: var(--accent); }
+  .a2text.a2-h4 { font-size: 1rem; font-weight: 600; }
+  .a2text.a2-caption { font-size: 0.85rem; color: var(--text-muted); }
+  .a2divider { border: none; border-top: 1px solid var(--border); margin: 0.6rem 0; width: 100%; }
+  .a2img { max-width: 100%; border-radius: 12px; display: block; box-shadow: var(--shadow-sm); }
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-size: 1.25rem;
+    line-height: 1;
+    vertical-align: middle;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="material-symbols-outlined header-icon">apartment</span>
+  <div>
+    <div class="header-title">Apartment Finder</div>
+    <div class="header-sub">AI Real Estate Assistant</div>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="clearChat()" title="New Chat">
+      <span class="material-symbols-outlined">restart_alt</span>
+    </button>
+    <button class="header-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+      <span class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+    </button>
+  </div>
+</header>
+
+<div id="log">
+  <div id="welcome-card" class="welcome-card">
+    <div class="welcome-badge">
+      <span class="material-symbols-outlined" style="font-size:1.1rem!important;">real_estate_agent</span> AI Apartment Finder
+    </div>
+    <h2>Find Your Dream Rental Home</h2>
+    <p>Ask questions, explore listings, schedule viewings, or calculate budget affordability.</p>
+    <div class="feature-grid">
+      <div class="feature-tag"><span class="material-symbols-outlined">search</span> Search Listings</div>
+      <div class="feature-tag"><span class="material-symbols-outlined">calendar_month</span> Schedule Viewings</div>
+      <div class="feature-tag"><span class="material-symbols-outlined">calculate</span> Rent Calculator</div>
+      <div class="feature-tag"><span class="material-symbols-outlined">image</span> AI Image Preview</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-container">
+  <div id="suggestions">
+    <button type="button" class="chip" onclick="sendPrompt('Search 2-bedroom apartments under $3500')">
+      <span class="material-symbols-outlined" style="font-size:1rem!important;">search</span> Search 2BR under $3500
+    </button>
+    <button type="button" class="chip" onclick="sendPrompt('Schedule an apartment viewing')">
+      <span class="material-symbols-outlined" style="font-size:1rem!important;">calendar_month</span> Schedule a viewing
+    </button>
+    <button type="button" class="chip" onclick="sendPrompt('Calculate rent-to-income for $3000/mo rent with $100000 income')">
+      <span class="material-symbols-outlined" style="font-size:1rem!important;">calculate</span> Rent-to-income estimate
+    </button>
+  </div>
+  <form id="form">
+    <input id="input" placeholder="Ask about apartments, viewings, budget estimates..." autocomplete="off" autofocus>
+    <button class="send-btn">
+      <span>Send</span>
+      <span class="material-symbols-outlined" style="color:#fff!important;font-size:1.1rem!important;">send</span>
+    </button>
+  </form>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const welcomeCard = document.getElementById("welcome-card");
+
+// Restore Theme
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  document.body.setAttribute("data-theme", "dark");
+  document.getElementById("theme-icon").textContent = "light_mode";
+}
+
+function toggleTheme() {
+  const current = document.body.getAttribute("data-theme");
+  const icon = document.getElementById("theme-icon");
+  if (current === "dark") {
+    document.body.removeAttribute("data-theme");
+    localStorage.setItem("theme", "light");
+    icon.textContent = "dark_mode";
+  } else {
+    document.body.setAttribute("data-theme", "dark");
+    localStorage.setItem("theme", "dark");
+    icon.textContent = "light_mode";
+  }
+}
+
+function clearChat() {
+  log.innerHTML = "";
+  log.appendChild(welcomeCard);
+  welcomeCard.style.display = "block";
+}
+
+function getTimeStr() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function sendPrompt(text) {
+  input.value = text;
+  form.dispatchEvent(new Event('submit', { cancelable: true }));
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function copyText(btn) {
+  const bubble = btn.closest('.bubble-container').querySelector('.bubble');
+  const text = bubble.innerText || bubble.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const originalText = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => { btn.textContent = originalText; }, 1500);
+  });
+}
+
+function bubble(who) {
+  if (welcomeCard && welcomeCard.style.display !== "none") {
+    welcomeCard.style.display = "none";
+  }
+  const m = el("div", "msg " + who);
+  const avatar = el("div", "avatar");
+  const icon = el("span", "material-symbols-outlined", who === "user" ? "person" : "real_estate_agent");
+  avatar.appendChild(icon);
+  
+  const container = el("div", "bubble-container");
+  const b = el("div", "bubble");
+  container.appendChild(b);
+
+  const meta = el("div", "msg-meta");
+  const timeSpan = el("span", "time", getTimeStr());
+  meta.appendChild(timeSpan);
+
+  if (who === "agent") {
+    const copyBtn = el("button", "copy-btn");
+    copyBtn.setAttribute("onclick", "copyText(this)");
+    copyBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:0.8rem!important;">content_copy</span> Copy`;
+    meta.appendChild(copyBtn);
+  }
+
+  container.appendChild(meta);
+  
+  if (who === "user") {
+    m.appendChild(container);
+    m.appendChild(avatar);
+  } else {
+    m.appendChild(avatar);
+    m.appendChild(container);
+  }
+  
+  log.appendChild(m);
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+function createTypingIndicator() {
+  const b = bubble("agent");
+  b.innerHTML = `
+    <div class="typing-indicator">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  `;
+  return b;
+}
+
+/* ----------------------------------------------------------------------------
+ * A2UI mini-renderer (v0.8 Basic Catalog subset).
+ * -------------------------------------------------------------------------- */
+
+function boundStr(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v.literalString === "string") return v.literalString;
+  return "";
+}
+
+function childIds(props) {
+  const ids = [];
+  if (props && typeof props.child === "string") ids.push(props.child);
+  const ch = props && props.children;
+  if (ch && Array.isArray(ch.explicitList)) for (const c of ch.explicitList) if (typeof c === "string") ids.push(c);
+  return ids;
+}
+
+function iconName(n) { return String(n || "").replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/\s+/g, "_").toLowerCase(); }
+
+function buildNode(id, comps, seen) {
+  if (!id || seen.has(id)) return null;
+  seen.add(id);
+  const spec = comps[id];
+  if (!spec || typeof spec !== "object") return null;
+  const type = Object.keys(spec)[0];
+  const props = spec[type] || {};
+  const kids = () => childIds(props).map(cid => buildNode(cid, comps, seen)).filter(Boolean);
+
+  switch (type) {
+    case "Card": {
+      const d = el("div", "a2card"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Column":
+    case "List": {
+      const horizontal = type === "List" && props.direction === "horizontal";
+      const d = el("div", horizontal ? "a2row" : "a2col"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Row": {
+      const d = el("div", "a2row" + (props.distribution === "spaceBetween" ? " between" : ""));
+      kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Text": {
+      const t = el("div", "a2text");
+      const hint = String(props.usageHint || "body").toLowerCase();
+      if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(hint)) t.classList.add("a2-" + hint);
+      else if (hint === "caption") t.classList.add("a2-caption");
+      t.textContent = boundStr(props.text);
+      return t;
+    }
+    case "Divider":
+      return el("hr", "a2divider");
+    case "Image": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;
+      const img = el("img", "a2img"); img.src = src; img.alt = boundStr(props.alt) || ""; return img;
+    }
+    case "Icon": {
+      const s = el("span", "material-symbols-outlined"); s.textContent = iconName(boundStr(props.name) || props.name); return s;
+    }
+    default:
+      return null;
+  }
+}
+
+function renderSurface(messages, container) {
+  const comps = {};
+  const roots = [];
+  for (const m of messages) {
+    if (m.beginRendering && typeof m.beginRendering.root === "string") roots.push(m.beginRendering.root);
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.id && c.component) comps[c.id] = c.component;
+  }
+  let rootIds = roots.filter(r => comps[r]);
+  if (rootIds.length === 0) {
+    const referenced = new Set();
+    for (const id in comps) { const spec = comps[id]; childIds(spec[Object.keys(spec)[0]] || {}).forEach(c => referenced.add(c)); }
+    rootIds = Object.keys(comps).filter(id => !referenced.has(id));
+  }
+  let drew = false;
+  for (const rid of rootIds) { const node = buildNode(rid, comps, new Set()); if (node) { container.appendChild(node); drew = true; } }
+  return drew;
+}
+
+function flattenText(messages) {
+  const out = [];
+  for (const m of messages) {
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.component && c.component.Text) out.push(boundStr(c.component.Text.text));
+  }
+  return out.join("\n").trim();
+}
+
+function renderReply(b, parts) {
+  b.textContent = "";
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const a2ui = parts.filter(p => p && p.kind === "a2ui" && p.data).map(p => p.data);
+
+  const textStr = texts.join("\n").trim();
+  if (textStr) b.appendChild(el("div", null, textStr));
+
+  if (a2ui.length) {
+    b.classList.add("rich");
+    if (!renderSurface(a2ui, b)) b.appendChild(el("div", null, flattenText(a2ui) || "(no card content)"));
+  }
+  if (!b.childNodes.length) b.textContent = "(no response)";
+  log.scrollTop = log.scrollHeight;
+}
+
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  bubble("user").textContent = text;
+  input.value = "";
+  const b = createTypingIndicator();
+  try {
+    const res = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text }) });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Server returned non-JSON (HTTP ${res.status}). ${raw.slice(0, 300)}`); }
+    renderReply(b, data.parts || []);
+  } catch (e) {
+    b.textContent = "Error: " + e.message;
+  }
+});
+</script>
+</body>
+</html>
